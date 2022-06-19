@@ -1,9 +1,24 @@
 QBCore = exports['qb-core']:GetCoreObject()
-PlayerDetails = nil
 menuLocation = 'topright' -- e.g. topright (default), topleft, bottomright, bottomleft
 menuSize = 'size-125' -- e.g. 'size-100', 'size-110', 'size-125', 'size-150', 'size-175', 'size-200'
 r, g, b = 20, 255, 236 -- red, green, blue values for the menu background
-Admin = nil
+SelectedPlayer = nil
+Admin = QBCore.Functions.GetPlayerData()
+local blockedPeds = {
+    "mp_m_freemode_01",
+    "mp_f_freemode_01",
+    "tony",
+    "g_m_m_chigoon_02_m",
+    "u_m_m_jesus_01",
+    "a_m_y_stbla_m",
+    "ig_terry_m",
+    "a_m_m_ktown_m",
+    "a_m_y_skater_m",
+    "u_m_y_coop",
+    "ig_car3guy1_m",
+}
+local lastSpectateCoord = nil
+local isSpectating = false
 
 MainMenu = MenuV:CreateMenu(false, Lang:t("menu.admin_menu"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:mainmenu')
 SelfMenu = MenuV:CreateMenu(false, Lang:t("menu.admin_options"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:selfmenu')
@@ -45,7 +60,7 @@ MainMenu:AddButton({
                     value = v,
                     description = Lang:t("info.player_name"),
                     select = function(btn)
-                        PlayerDetails = btn.Value
+                        SelectedPlayer = btn.Value
                         OpenPlayerMenus()
                     end
                 })
@@ -72,31 +87,81 @@ MainMenu:AddButton({
     description = Lang:t("desc.developer_desc")
 })
 
+--- Functions
+local function LoadPlayerModel(skin)
+    RequestModel(skin)
+    while not HasModelLoaded(skin) do
+      Wait(0)
+    end
+end
+
+local function isPedAllowedRandom(skin)
+    local retval = false
+    for _, v in pairs(blockedPeds) do
+        if v ~= skin then
+            retval = true
+        end
+    end
+    return retval
+end
+
+function spectatePlayer(targetPed,target,name)
+	local playerPed = PlayerPedId() -- yourself
+	enable = true
+	if (target == PlayerId() or target == -1) then 
+		enable = false
+	end
+	if enable then
+		SetEntityVisible(playerPed, false, 0)
+		SetEntityCollision(playerPed, false, false)
+		SetEntityInvincible(playerPed, true)
+		NetworkSetEntityInvisibleToNetwork(playerPed, true)
+		Citizen.Wait(200) -- to prevent target player seeing you
+		if targetPed == playerPed then
+			Wait(500)
+			targetPed = GetPlayerPed(target)
+		end
+		local targetx,targety,targetz = table.unpack(GetEntityCoords(targetPed, false))
+		RequestCollisionAtCoord(targetx,targety,targetz)
+		NetworkSetInSpectatorMode(true, targetPed)
+		
+		DrawPlayerInfo(target)
+	elseif not enable then
+		RequestCollisionAtCoord(oldCoords.x, oldCoords.y, oldCoords.z)
+		SetEntityVisible(playerPed, true, 0)
+		SetEntityCoords(playerPed, oldCoords.x, oldCoords.y, oldCoords.z+0.3, 0, 0, 0, false)
+		Wait(100)
+		oldCoords=nil
+		NetworkSetInSpectatorMode(false, targetPed)
+		StopDrawPlayerInfo()
+		frozen = false
+		Citizen.Wait(100) -- to prevent staying invisible
+		SetEntityVisible(playerPed, true, 0)
+		SetEntityCollision(playerPed, true, true)
+		SetEntityInvincible(playerPed, false)
+		NetworkSetEntityInvisibleToNetwork(playerPed, false)
+	end
+end
+
+function DrawPlayerInfo(target)
+	drawTarget = target
+	drawInfo = true
+end
+
+function StopDrawPlayerInfo()
+	drawInfo = false
+	drawTarget = 0
+end
+
+--- NetEvents
 RegisterNetEvent('qb-admin:client:openMenu', function()
-    MenuV:OpenMenu(MainMenu)
     TriggerServerEvent('qb-admin:server:check')
+    MenuV:OpenMenu(MainMenu)
 end)
 
 RegisterNetEvent('qb-admin:client:playsound', function(name, volume, radius)
     TriggerServerEvent('InteractSound_SV:PlayWithinDistance', radius, name, volume)
 end)
-
-local blockedPeds = {
-    "mp_m_freemode_01",
-    "mp_f_freemode_01",
-    "tony",
-    "g_m_m_chigoon_02_m",
-    "u_m_m_jesus_01",
-    "a_m_y_stbla_m",
-    "ig_terry_m",
-    "a_m_m_ktown_m",
-    "a_m_y_skater_m",
-    "u_m_y_coop",
-    "ig_car3guy1_m",
-}
-
-local lastSpectateCoord = nil
-local isSpectating = false
 
 AddEventHandler('qb-admin:client:inventory', function(targetPed)
     TriggerServerEvent('qb-admin:server:check')
@@ -147,23 +212,6 @@ RegisterNetEvent('qb-admin:client:SaveCar', function()
     end
 end)
 
-local function LoadPlayerModel(skin)
-    RequestModel(skin)
-    while not HasModelLoaded(skin) do
-      Wait(0)
-    end
-end
-
-local function isPedAllowedRandom(skin)
-    local retval = false
-    for _, v in pairs(blockedPeds) do
-        if v ~= skin then
-            retval = true
-        end
-    end
-    return retval
-end
-
 RegisterNetEvent('qb-admin:client:SetModel', function(skin)
     local ped = PlayerPedId()
     local model = GetHashKey(skin)
@@ -180,17 +228,6 @@ RegisterNetEvent('qb-admin:client:SetModel', function(skin)
 		SetModelAsNoLongerNeeded(model)
 	end
 	SetEntityInvincible(ped, false)
-end)
-
-RegisterNetEvent('qb-admin:client:SetSpeed', function(speed)
-    local ped = PlayerId()
-    if speed == "fast" then
-        SetRunSprintMultiplierForPlayer(ped, 1.49)
-        SetSwimMultiplierForPlayer(ped, 1.49)
-    else
-        SetRunSprintMultiplierForPlayer(ped, 1.0)
-        SetSwimMultiplierForPlayer(ped, 1.0)
-    end
 end)
 
 RegisterNetEvent('qb-weapons:client:SetWeaponAmmoManual', function(Weapon, ammo)
@@ -238,45 +275,6 @@ RegisterNetEvent('qb-admin:client:getsounds', function(sounds)
     exports['qb-menu']:openMenu(soundMenu)
 end)
 
-
-function spectatePlayer(targetPed,target,name)
-	local playerPed = PlayerPedId() -- yourself
-	enable = true
-	if (target == PlayerId() or target == -1) then 
-		enable = false
-	end
-	if enable then
-		SetEntityVisible(playerPed, false, 0)
-		SetEntityCollision(playerPed, false, false)
-		SetEntityInvincible(playerPed, true)
-		NetworkSetEntityInvisibleToNetwork(playerPed, true)
-		Citizen.Wait(200) -- to prevent target player seeing you
-		if targetPed == playerPed then
-			Wait(500)
-			targetPed = GetPlayerPed(target)
-		end
-		local targetx,targety,targetz = table.unpack(GetEntityCoords(targetPed, false))
-		RequestCollisionAtCoord(targetx,targety,targetz)
-		NetworkSetInSpectatorMode(true, targetPed)
-		
-		DrawPlayerInfo(target)
-	elseif not enable then
-		RequestCollisionAtCoord(oldCoords.x, oldCoords.y, oldCoords.z)
-		SetEntityVisible(playerPed, true, 0)
-		SetEntityCoords(playerPed, oldCoords.x, oldCoords.y, oldCoords.z+0.3, 0, 0, 0, false)
-		Wait(100)
-		oldCoords=nil
-		NetworkSetInSpectatorMode(false, targetPed)
-		StopDrawPlayerInfo()
-		frozen = false
-		Citizen.Wait(100) -- to prevent staying invisible
-		SetEntityVisible(playerPed, true, 0)
-		SetEntityCollision(playerPed, true, true)
-		SetEntityInvincible(playerPed, false)
-		NetworkSetEntityInvisibleToNetwork(playerPed, false)
-	end
-end
-
 Citizen.CreateThread( function()
 	while true do
 		Citizen.Wait(500)
@@ -295,22 +293,6 @@ Citizen.CreateThread( function()
 	end
 end)
 
-function DrawPlayerInfo(target)
-	drawTarget = target
-	drawInfo = true
-end
-
-function StopDrawPlayerInfo()
-	drawInfo = false
-	drawTarget = 0
-end
-
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     Admin = QBCore.Functions.GetPlayerData()
-end)
-
-AddEventHandler('onResourceStart', function(resource)
-    if resource == GetCurrentResourceName() then
-        Admin = QBCore.Functions.GetPlayerData()
-    end
 end)
