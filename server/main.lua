@@ -25,6 +25,11 @@ function CheckRoutingbucket(source, target)
     if sourceBucket ~= targetBucket then SetPlayerRoutingBucket(source, tonumber(targetBucket)) end
 end
 
+--- Why? Idk tbh
+function NoPerms(source)
+    TriggerClientEvent('QBCore:Notify', source, Lang:t('error.no_permissions'), 'error')
+end
+
 function RemovePermission(TargetSource, SenderSource)
     local result = MySQL.single.await('SELECT * FROM adminmenu WHERE license = ? or citizenid = ?', {QBCore.Functions.GetIdentifier(TargetSource, 'license'), QBCore.Functions.GetPlayer(TargetSource).PlayerData.citizenid})
     if not result then return TriggerClientEvent('QBCore:Notify', SenderSource, Lang:t('error.has_no_permissions', {player = GetPlayerName(TargetSource)}), 'error') end
@@ -139,7 +144,7 @@ end)
 RegisterNetEvent('qb-admin:server:kill', function(player)
     local src = source
 
-    if not (QBCore.Functions.HasPermission(src, events['kill']) or HasPermission(src, events['kill'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['kill']) or HasPermission(src, events['kill'])) then NoPerms(src) return end
     if PermOrder(src) > PermOrder(player.id) then return end
 
     CreateLog(1, src, player.id)
@@ -149,7 +154,7 @@ end)
 RegisterNetEvent('qb-admin:server:revive', function(player)
     local src = source
 
-    if not (QBCore.Functions.HasPermission(src, events['revive']) or HasPermission(src, events['revive'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['revive']) or HasPermission(src, events['revive'])) then NoPerms(src) return end
 
     CreateLog(2, src, player.id)
     TriggerClientEvent('hospital:client:Revive', player.id)
@@ -160,7 +165,7 @@ RegisterNetEvent('qb-admin:server:freeze', function(player)
     local TargetSource = player.id
     local TargetPed = GetPlayerPed(TargetSource)
 
-    if not (QBCore.Functions.HasPermission(src, events['freeze']) or HasPermission(src, events['freeze'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['freeze']) or HasPermission(src, events['freeze'])) then NoPerms(src) return end
     if PermOrder(src) > PermOrder(TargetSource) then return end
     if IsFrozen[TargetSource] == nil then IsFrozen[TargetSource] = false end
 
@@ -179,7 +184,7 @@ RegisterNetEvent('qb-admin:server:spectate', function(player)
     local targetped = GetPlayerPed(player.id)
     local coords = GetEntityCoords(targetped)
     
-    if not (QBCore.Functions.HasPermission(src, events['spectate']) or HasPermission(src, events['spectate'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['spectate']) or HasPermission(src, events['spectate'])) then NoPerms(src) return end
 
     CreateLog(4, src, player.id)
     TriggerClientEvent('qb-admin:client:spectate', src, player.id, coords)
@@ -190,7 +195,7 @@ RegisterNetEvent('qb-admin:server:goto', function(player)
     local admin = GetPlayerPed(src)
     local coords = GetEntityCoords(GetPlayerPed(player.id))
     
-    if not (QBCore.Functions.HasPermission(src, events['goto']) or HasPermission(src, events['goto'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['goto']) or HasPermission(src, events['goto'])) then NoPerms(src) return end
 
     CreateLog(5, src, player.id)
     CheckRoutingbucket(src, player.id)
@@ -203,7 +208,7 @@ RegisterNetEvent('qb-admin:server:bring', function(player)
     local coords = GetEntityCoords(admin)
     local target = GetPlayerPed(player.id)
     
-    if not (QBCore.Functions.HasPermission(src, events['bring']) or HasPermission(src, events['bring'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['bring']) or HasPermission(src, events['bring'])) then NoPerms(src) return end
 
     CreateLog(6, src, player.id)
     CheckRoutingbucket(player.id, src)
@@ -217,7 +222,7 @@ RegisterNetEvent('qb-admin:server:intovehicle', function(player)
     local vehicle = GetVehiclePedIsIn(targetPed, false)
     local seat = -1
 
-    if not (QBCore.Functions.HasPermission(src, events['intovehicle']) or HasPermission(src, events['intovehicle'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['intovehicle']) or HasPermission(src, events['intovehicle'])) then NoPerms(src) return end
     if vehicle == 0 then TriggerClientEvent('QBCore:Notify', src, Lang:t("error.player_no_vehicle"), 'error', 4000) return end
     for i = 0, 8, 1 do if GetPedInVehicleSeat(vehicle, i) == 0 then seat = i break end end
     if seat == -1 then TriggerClientEvent('QBCore:Notify', src, Lang:t("error.no_free_seats"), 'error', 4000) return end
@@ -232,7 +237,7 @@ RegisterNetEvent('qb-admin:server:routingbucket', function(player, bucket)
     local Player = QBCore.Functions.GetPlayer(src)
     local Target = QBCore.Functions.GetPlayer(player.id)
 
-    if not (QBCore.Functions.HasPermission(src, events['routingbucket']) or HasPermission(src, events['routingbucket'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['routingbucket']) or HasPermission(src, events['routingbucket'])) then NoPerms(src) return end
     if GetPlayerRoutingBucket(player.id) == tonumber(bucket) then return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Used **routingbucket** on **%s** (CitizenID: %s | ID: %s) and went to bucket **%s**",
@@ -244,7 +249,7 @@ RegisterNetEvent('qb-admin:server:kick', function(player, reason)
     local src = source
     local target = player.id
     
-    if not (QBCore.Functions.HasPermission(src, events['kick']) or HasPermission(src, events['kick'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['kick']) or HasPermission(src, events['kick'])) then NoPerms(src) return end
     if PermOrder(src) > PermOrder(target) then return end
     
     TriggerEvent('qb-log:server:CreateLog', 'bans', 'Player Kicked', 'red', string.format('%s was kicked by %s for %s', GetPlayerName(target), GetPlayerName(src), reason), true)
@@ -258,7 +263,7 @@ RegisterNetEvent('qb-admin:server:ban', function(player, time, reason)
     if banTime > 2147483647 then banTime = 2147483647 end
     local timeTable = os.date('*t', banTime)
     
-    if not (QBCore.Functions.HasPermission(src, events['ban']) or HasPermission(src, events['ban'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['ban']) or HasPermission(src, events['ban'])) then NoPerms(src) return end
     if PermOrder(src) > PermOrder(target) then return end
 
     MySQL.Async.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
@@ -287,7 +292,7 @@ RegisterNetEvent('qb-admin:server:setPermissions', function(targetId, group, use
     local Player = QBCore.Functions.GetPlayer(src)
     local Target = QBCore.Functions.GetPlayer(targetId)
 
-    if not (QBCore.Functions.HasPermission(src, events['setPermissions']) or HasPermission(src, events['setPermissions'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['setPermissions']) or HasPermission(src, events['setPermissions'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Changed **%s** (CitizenID: %s | ID: %s) **permissions** to **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, GetPlayerName(targetId), Target.PlayerData.citizenid, targetId, group.label))
@@ -303,7 +308,7 @@ RegisterNetEvent('qb-admin:server:updatePermissions', function(targetId, group)
     local Player = QBCore.Functions.GetPlayer(src)
     local Target = QBCore.Functions.GetPlayer(targetId)
 
-    if not (QBCore.Functions.HasPermission(src, events['setPermissions']) or HasPermission(src, events['setPermissions'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['setPermissions']) or HasPermission(src, events['setPermissions'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Changed **%s** (CitizenID: %s | ID: %s) **permissions** to **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, GetPlayerName(targetId), Target.PlayerData.citizenid, targetId, group.label))
@@ -317,7 +322,7 @@ end)
 RegisterNetEvent('qb-admin:server:cloth', function(player)
     local src = source
 
-    if not (QBCore.Functions.HasPermission(src, events['cloth']) or HasPermission(src, events['cloth'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['cloth']) or HasPermission(src, events['cloth'])) then NoPerms(src) return end
 
     CreateLog(8, src, player.id)
     TriggerClientEvent('qb-clothing:client:openMenu', player.id)
@@ -332,7 +337,7 @@ RegisterNetEvent('qb-admin:server:spawnVehicle', function(model)
     local heading = GetEntityHeading(PlayerPed)
     local oldvehicle = GetVehiclePedIsIn(PlayerPed, false)
 
-    if not (QBCore.Functions.HasPermission(src, events['spawnVehicle']) or HasPermission(src, events['spawnVehicle'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['spawnVehicle']) or HasPermission(src, events['spawnVehicle'])) then NoPerms(src) return end
     if oldvehicle ~= 0 then DeleteEntity(oldvehicle) end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Spawned in a **%s**",
@@ -350,7 +355,7 @@ RegisterNetEvent('qb-admin:server:SaveCar', function(mods, vehicle, plate)
     local result = MySQL.Sync.fetchAll('SELECT plate FROM player_vehicles WHERE plate = ?', { plate })
 
     if result[1] ~= nil then TriggerClientEvent('QBCore:Notify', src, Lang:t("error.failed_vehicle_owner"), 'error', 3000) return end
-    if not (QBCore.Functions.HasPermission(src, events['savecar']) or HasPermission(src, events['savecar'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['savecar']) or HasPermission(src, events['savecar'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Saved a car to his garage **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, vehicle.model))
@@ -374,7 +379,7 @@ RegisterNetEvent('qb-admin:server:vehicleplate', function(Plate)
     local OldPlate = Trim(GetVehicleNumberPlateText(Vehicle))
     local VehicleHash = GetEntityModel(Vehicle)
 
-    if not (QBCore.Functions.HasPermission(src, events['platecar']) or HasPermission(src, events['platecar'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['platecar']) or HasPermission(src, events['platecar'])) then NoPerms(src) return end
     if Vehicle == 0 then return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Changed a plate from **%s** to **%s**",
@@ -389,7 +394,7 @@ end)
 RegisterNetEvent('qb-admin:server:getsounds', function()
     local src = source
 
-    if not (QBCore.Functions.HasPermission(src, events['playsound']) or HasPermission(src, events['playsound'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['playsound']) or HasPermission(src, events['playsound'])) then NoPerms(src) return end
 
     TriggerClientEvent('qb-admin:client:getsounds', src, Sounds)
 end)
@@ -423,7 +428,7 @@ RegisterNetEvent('qb-admin:server:playsound', function(target, soundname, soundv
     local Player = QBCore.Functions.GetPlayer(source)
     local Target = QBCore.Functions.GetPlayer(target)
 
-    if not (QBCore.Functions.HasPermission(src, events['playsound']) or HasPermission(src, events['playsound'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['playsound']) or HasPermission(src, events['playsound'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Played a sound on **%s** (CitizenID: %s | ID: %s) - Sound: **%s** - Volume: **%s** - Radius: **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, GetPlayerName(target), Target.PlayerData.citizenid, target, soundname, soundvolume, soundradius))
@@ -436,7 +441,7 @@ RegisterNetEvent('qb-admin:server:getradiolist', function(channel)
     local Player = QBCore.Functions.GetPlayer(src)
     local Players = {}
 
-    if not (QBCore.Functions.HasPermission(src, events['getradiolist']) or HasPermission(src, events['getradiolist'])) then return end
+    if not (QBCore.Functions.HasPermission(src, events['getradiolist']) or HasPermission(src, events['getradiolist'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Pulled radiofrequency number **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, tonumber(channel)))
@@ -466,7 +471,7 @@ RegisterNetEvent('qb-admin:server:giveallweapons', function(Weapontype, PlayerID
     local Target = QBCore.Functions.GetPlayer(src)
     local Player = QBCore.Functions.GetPlayer(source)
 
-    if not (QBCore.Functions.HasPermission(source, events['giveallweapons']) or HasPermission(src, events['giveallweapons'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['giveallweapons']) or HasPermission(src, events['giveallweapons'])) then NoPerms(src) return end
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Pulled all the %s weapons for **%s** (CitizenID: %s | ID: %s)",
     GetPlayerName(source), Player.PlayerData.citizenid, source, Weapontype, GetPlayerName(src), Target.PlayerData.citizenid, src))
@@ -477,13 +482,13 @@ RegisterNetEvent('qb-admin:server:giveallweapons', function(Weapontype, PlayerID
 end)
 
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getdealers', function(source, cb)
-    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then NoPerms(source) return end
 
     cb(exports['qb-drugs']:GetDealers())
 end)
 
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayers', function(source, cb)
-    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then NoPerms(source) return end
 
     local players = {}
     for _, v in pairs(QBCore.Functions.GetPlayers()) do
@@ -514,7 +519,7 @@ QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayers', function(sou
 end)
 
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayer', function(source, cb, TargetID)
-    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then NoPerms(source) return end
 
     local ped = QBCore.Functions.GetPlayer(TargetID)
     local player = {
