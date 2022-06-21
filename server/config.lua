@@ -42,6 +42,7 @@ commands = {
     ['delwarn'] = 'admin',
     ['setmodel'] = 'admin',
     ['setammo'] = 'admin',
+    ['kickall'] = 'god',
 }
 
 --- Permission hierarchy order from top to bottom.

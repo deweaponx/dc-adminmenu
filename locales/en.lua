@@ -18,6 +18,7 @@ local Translations = {
         ["give_item"] = "You need to specify everything",
         ["already_has_permissions"] = "%{player} already has the permission %{permission} for %{identifier}",
         ["has_no_permissions"] = "%{player} has no permission",
+        ["no_permissions"] = "You don't have the permissions to do this",
     },
     success = {
         ["blips_activated"] = "Blips activated",
