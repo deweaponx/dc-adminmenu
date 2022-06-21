@@ -37,14 +37,13 @@ VehicleMenu:AddButton({
                     OpenCarModelsMenu(select)
                 end
             })
-        end    
+        end
     end
 })
 
 VehicleMenu:AddButton({
     icon = '🔧',
     label = Lang:t("menu.fix_vehicle"),
-    value = 'fix',
     description = Lang:t("desc.fix_vehicle_desc"),
     select = function()
         TriggerServerEvent('QBCore:CallCommand', "fix", {})
@@ -54,7 +53,6 @@ VehicleMenu:AddButton({
 VehicleMenu:AddButton({
     icon = '💲',
     label = Lang:t("menu.buy"),
-    value = 'buy',
     description = Lang:t("desc.buy_desc"),
     select = function()
         TriggerServerEvent('QBCore:CallCommand', "admincar", {})
@@ -64,17 +62,15 @@ VehicleMenu:AddButton({
 VehicleMenu:AddButton({
     icon = '☠',
     label = Lang:t("menu.remove_vehicle"),
-    value = 'remove',
     description = Lang:t("desc.remove_vehicle_desc"),
     select = function()
         TriggerServerEvent('QBCore:CallCommand', "dv", {})
     end
 })
 
-local VehicleMenuButton5 = VehicleMenu:AddButton({
+VehicleMenu:AddButton({
     icon = '🛠️',
     label = Lang:t("menu.tune_car"),
-    value = '',
     description = Lang:t("desc.tune_car"),
     select = function()
         local ped = PlayerPedId()
@@ -106,7 +102,6 @@ local VehicleMenuButton5 = VehicleMenu:AddButton({
 VehicleMenu:AddButton({
     icon = '🪧',
     label = Lang:t("menu.plate_car"),
-    value = '',
     description = Lang:t("desc.plate_car"),
     select = function()
         local dialog = exports['qb-input']:ShowInput({

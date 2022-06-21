@@ -161,41 +161,54 @@ KickMenu:AddButton({
 })
 
 PermsMenu:AddSlider({
-    icon = '',
     label = 'Group',
-    value = 'user',
     values = {{
         label = 'Remove',
-        value = 'user',
-        description = 'Group'
+        value = 'user'
+    }, {
+        label = 'Mod',
+        value = 'mod'
     }, {
         label = 'Admin',
-        value = 'admin',
-        description = 'Group'
+        value = 'admin'
     }, {
         label = 'God',
-        value = 'god',
-        description = 'Group'
+        value = 'god'
     }},
-    change = function(_, newValue)
-        local vcal = newValue
-        if vcal == 1 then
-            selectedgroup = {rank = "user", label = "User"}
-        elseif vcal == 2 then
-            selectedgroup = {rank = "AdminmenuAdmin", label = "Admin"}
-        elseif vcal == 3 then
-            selectedgroup = {rank = "AdminmenuGod", label = "God"}
+    onselect = function(_, newValue)
+        selectedgroup = newValue
+    end
+})
+PermsMenu:AddButton({
+    label = 'Add on player (license)',
+    description = 'This will affect the player on each and every character they use',
+    select = function()
+        if selectedgroup then
+            TriggerServerEvent('qb-admin:server:setPermissions', SelectedPlayer.id, selectedgroup, true)
+            selectedgroup = nil
+        else
+            QBCore.Functions.Notify(Lang:t("error.changed_perm_failed"), 'error')
         end
     end
 })
 PermsMenu:AddButton({
-    icon = '',
-    label = Lang:t("info.confirm"),
-    value = "giveperms",
-    description = 'Give the permission group',
+    label = 'Add on character (citizenid)',
+    description = 'This will only affect this player\'s current character',
     select = function()
         if selectedgroup then
-            TriggerServerEvent('qb-admin:server:setPermissions', SelectedPlayer.id, selectedgroup)
+            TriggerServerEvent('qb-admin:server:setPermissions', SelectedPlayer.id, selectedgroup, false)
+            selectedgroup = nil
+        else
+            QBCore.Functions.Notify(Lang:t("error.changed_perm_failed"), 'error')
+        end
+    end
+})
+PermsMenu:AddButton({
+    label = 'Update permissions',
+    description = 'This will only affect this person\'s permission',
+    select = function()
+        if selectedgroup then
+            TriggerServerEvent('qb-admin:server:updatePermissions', SelectedPlayer.id, selectedgroup, false)
             selectedgroup = nil
         else
             QBCore.Functions.Notify(Lang:t("error.changed_perm_failed"), 'error')
@@ -206,7 +219,6 @@ PermsMenu:AddButton({
 GiveItemMenu:AddSlider({
     icon = '',
     label = Lang:t("info.item"),
-    value = "reason",
     values = {{
         label = Lang:t("menu.item_list"),
         value = '',

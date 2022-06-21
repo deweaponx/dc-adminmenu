@@ -269,7 +269,7 @@ ServerMenu:AddButton({
                     end
                 })
             end
-        end)    
+        end)
     end
 })
 

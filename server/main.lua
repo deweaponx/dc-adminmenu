@@ -282,7 +282,7 @@ RegisterNetEvent('qb-admin:server:ban', function(player, time, reason)
     end
 end)
 
-RegisterNetEvent('qb-admin:server:setPermissions', function(targetId, group)
+RegisterNetEvent('qb-admin:server:setPermissions', function(targetId, group, uselicense)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     local Target = QBCore.Functions.GetPlayer(targetId)
@@ -291,9 +291,27 @@ RegisterNetEvent('qb-admin:server:setPermissions', function(targetId, group)
 
     TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Changed **%s** (CitizenID: %s | ID: %s) **permissions** to **%s**",
     GetPlayerName(src), Player.PlayerData.citizenid, src, GetPlayerName(targetId), Target.PlayerData.citizenid, targetId, group.label))
-    TriggerClientEvent('QBCore:Notify', targetId, Lang:t("info.rank_level")..group.label)
-    TriggerClientEvent('QBCore:Notify', src, Lang:t("success.changed_perm")..' : '..group.label)
-    UpdatePermission(targetId, group.rank)
+    if group ~= 'user' then
+        AddPermission(targetId, group, src, uselicense)
+    else
+        RemovePermission(targetId, src)
+    end
+end)
+
+RegisterNetEvent('qb-admin:server:updatePermissions', function(targetId, group)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local Target = QBCore.Functions.GetPlayer(targetId)
+
+    if not (QBCore.Functions.HasPermission(src, events['setPermissions']) or HasPermission(src, events['setPermissions'])) then return end
+
+    TriggerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Changed **%s** (CitizenID: %s | ID: %s) **permissions** to **%s**",
+    GetPlayerName(src), Player.PlayerData.citizenid, src, GetPlayerName(targetId), Target.PlayerData.citizenid, targetId, group.label))
+    if group ~= 'user' then
+        UpdatePermission(targetId, group, src)
+    else
+        RemovePermission(targetId, src)
+    end
 end)
 
 RegisterNetEvent('qb-admin:server:cloth', function(player)
@@ -459,7 +477,7 @@ RegisterNetEvent('qb-admin:server:giveallweapons', function(Weapontype, PlayerID
 end)
 
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getdealers', function(source, cb)
-    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(src, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
 
     cb(exports['qb-drugs']:GetDealers())
 end)
@@ -496,7 +514,7 @@ QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayers', function(sou
 end)
 
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayer', function(source, cb, TargetID)
-    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(src, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
 
     local ped = QBCore.Functions.GetPlayer(TargetID)
     local player = {

@@ -51,7 +51,7 @@ QBCore.Commands.Add('announce', Lang:t("commands.make_announcement"), {}, false,
 end)
 
 QBCore.Commands.Add('admin', Lang:t("commands.open_admin"), {}, false, function(source)
-    if not (QBCore.Functions.HasPermission(src, events['usemenu']) or HasPermission(src, events['usemenu'])) then return end
+    if not (QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then return end
 
     TriggerClientEvent('qb-admin:client:openMenu', source)
 end)
@@ -210,7 +210,7 @@ end)
 QBCore.Commands.Add('reporttoggle', Lang:t("commands.report_toggle"), {}, false, function(source)
     local src = source
 
-    if not (QBCore.Functions.HasPermission(src, commands['reporttoggle']) or HasPermission(src, commands['reporttoggle'])) then return end    
+    if not (QBCore.Functions.HasPermission(src, commands['reporttoggle']) or HasPermission(src, commands['reporttoggle'])) then return end
 
     QBCore.Functions.ToggleOptin(src)
     if QBCore.Functions.IsOptin(src) then
