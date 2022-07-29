@@ -155,6 +155,7 @@ local Translations = {
         ["weapon_lmg"] = "LMGs",
         ["weapon_sniper"] = "Snipers",
         ["weapon_heavy"] = "Heavy Weapons",
+        ["cuff"] = "Un/Cuff",
     },
     desc = {
         ["admin_options_desc"] = "Misc. Admin Options",
@@ -213,6 +214,7 @@ local Translations = {
         ["tune_car"] = "Upgrade Your Car",
         ["plate_car"] = "Change The Car's Numberplate",
         ["give_weapons"] = "Give All Weapons From One Type",
+        ["cuff"] = "Un/Cuff yourself",
     },
     time = {
         ["ban_length"] = "Ban Length",
