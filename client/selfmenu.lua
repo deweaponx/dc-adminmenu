@@ -207,3 +207,14 @@ SelfMenu:AddSlider({
         TriggerServerEvent('qb-admin:server:giveallweapons', newValue)
     end
 })
+
+SelfMenu:AddButton({
+    icon = '👮',
+    label = Lang:t("menu.cuff"),
+    description = Lang:t("desc.cuff"),
+    select = function()
+        TriggerEvent('police:client:GetCuffed', Admin.source, true)
+        TriggerServerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Un/Cuffed himself",
+        GetPlayerName(PlayerId()), Admin.citizenid, Admin.source))
+    end
+})
