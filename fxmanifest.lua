@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Disabled Coding'
 description 'Admin menu specifically made for the QBCore framework'
-version '2.1.0'
+version '2.1.1'
 repository 'https://github.com/Disabled-Coding/dc-adminmenu'
 
 shared_scripts {
