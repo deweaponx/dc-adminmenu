@@ -82,6 +82,7 @@ RegisterNetEvent('qb-admin:client:Show', function(players)
                 blip = AddBlipForEntity(ped)
                 SetBlipSprite(blip, 1)
                 ShowHeadingIndicatorOnBlip(blip, true)
+                SetBlipCategory(blip, 7)
             else
                 local veh = GetVehiclePedIsIn(ped, false)
                 local blipSprite = GetBlipSprite(blip)
