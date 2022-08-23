@@ -170,7 +170,6 @@ QBCore.Commands.Add('reportr', Lang:t("commands.reply_to_report"), {{name='id', 
     local OtherPlayer = QBCore.Functions.GetPlayer(playerId)
     if msg == '' then return end
     if not OtherPlayer then return TriggerClientEvent('QBCore:Notify', src, 'Player is not online', 'error') end
-    if not QBCore.Functions.HasPermission(src) or IsPlayerAceAllowed(src, 'command') ~= 1 then return end
     TriggerClientEvent('chat:addMessage', playerId, {
         color = {255, 0, 0},
         multiline = true,
