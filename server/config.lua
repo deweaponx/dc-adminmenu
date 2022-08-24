@@ -4,6 +4,9 @@ SoundScriptName = 'interact-sound' -- Name of the sound script that you are usin
 SoundPath = '/client/html/sounds' -- Where the sounds are located
 Linux = false -- Wether or not if you use linux. Very important!
 
+--- Use QBCore's permission system | If false use my database permission setup
+UseQBCorePermissions = false
+
 --- Who should be able to trigger each NetEvent on the server side?
 events = {
     ['kill'] = 'god',
