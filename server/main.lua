@@ -2,6 +2,7 @@
 QBCore = exports['qb-core']:GetCoreObject()
 local Sounds = {}
 local IsFrozen = {}
+local Discord = QBCore.Config.Server.discord or ''
 
 --- Checks what permission the source has and what their ranking is in the permission hierachy.
 --- @param source number - The player's ID
@@ -253,7 +254,7 @@ RegisterNetEvent('qb-admin:server:kick', function(player, reason)
     if PermOrder(src) > PermOrder(target) then return end
     
     TriggerEvent('qb-log:server:CreateLog', 'bans', 'Player Kicked', 'red', string.format('%s was kicked by %s for %s', GetPlayerName(target), GetPlayerName(src), reason), true)
-    DropPlayer(target, Lang:t("info.kicked_server") .. ':\n' .. reason .. '\n\n' .. Lang:t("info.check_discord") .. QBCore.Config.Server.discord)
+    DropPlayer(target, Lang:t("info.kicked_server") .. ':\n' .. reason .. '\n\n' .. Lang:t("info.check_discord") .. Discord)
 end)
 
 RegisterNetEvent('qb-admin:server:ban', function(player, time, reason)
@@ -281,9 +282,9 @@ RegisterNetEvent('qb-admin:server:ban', function(player, time, reason)
     })
     TriggerEvent('qb-log:server:CreateLog', 'bans', 'Player Banned', 'red', string.format('%s was banned by %s for %s', GetPlayerName(target), GetPlayerName(src), reason), true)
     if banTime >= 2147483647 then
-        DropPlayer(target, Lang:t("info.banned") .. '\n' .. reason .. Lang:t("info.ban_perm") .. QBCore.Config.Server.discord)
+        DropPlayer(target, Lang:t("info.banned") .. '\n' .. reason .. Lang:t("info.ban_perm") .. Discord)
     else
-        DropPlayer(target, Lang:t("info.banned") .. '\n' .. reason .. Lang:t("info.ban_expires") .. timeTable['day'] .. '/' .. timeTable['month'] .. '/' .. timeTable['year'] .. ' ' .. timeTable['hour'] .. ':' .. timeTable['min'] .. '\n🔸 Check our Discord for more information: ' .. QBCore.Config.Server.discord)
+        DropPlayer(target, Lang:t("info.banned") .. '\n' .. reason .. Lang:t("info.ban_expires") .. timeTable['day'] .. '/' .. timeTable['month'] .. '/' .. timeTable['year'] .. ' ' .. timeTable['hour'] .. ':' .. timeTable['min'] .. '\n🔸 Check our Discord for more information: ' .. Discord)
     end
 end)
 
