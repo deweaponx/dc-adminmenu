@@ -771,12 +771,12 @@ function OpenPlayerMenus()
             value = 'dealerrep'
         },
         [9] = {
-            label = Lang:t("label.cash").. ': ' ..SelectedPlayer.cash.. '$',
+            label = Lang:t("label.cash").. ': $' ..SelectedPlayer.cash,
             description = Lang:t("desc.player_info"),
             value = 'cash'
         },
         [10] = {
-            label = Lang:t("label.bank").. ': ' ..SelectedPlayer.bank.. '$',
+            label = Lang:t("label.bank").. ': $' ..SelectedPlayer.bank,
             description = Lang:t("desc.player_info"),
             value = 'bank'
         },
