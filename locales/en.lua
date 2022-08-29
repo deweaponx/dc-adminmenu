@@ -328,6 +328,9 @@ local Translations = {
         ["job"] = "Current Job",
         ["gang"] = "Current Gang",
         ["radio"] = "Radio Frequency",
+        ["license"] = "License",
+        ["discord"] = "Discord",
+        ["steam"] = "Steam",
     }
 }
 

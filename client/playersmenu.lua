@@ -795,6 +795,21 @@ function OpenPlayerMenus()
             description = Lang:t("desc.player_info"),
             value = 'radio'
         },
+        [14] = {
+            label = Lang:t("label.license").. ': ' ..SelectedPlayer.license,
+            description = Lang:t("desc.player_info"),
+            value = 'license'
+        },
+        [15] = {
+            label = Lang:t("label.discord").. ': ' ..SelectedPlayer.discord,
+            description = Lang:t("desc.player_info"),
+            value = 'discord'
+        },
+        [16] = {
+            label = Lang:t("label.steam").. ': ' ..SelectedPlayer.steam,
+            description = Lang:t("desc.player_info"),
+            value = 'steam'
+        },
     }
     for _, v in ipairs(elements) do
         PlayerDetailMenu:AddButton({
@@ -803,6 +818,7 @@ function OpenPlayerMenus()
             description = v.description,
             select = function(btn)
                 local values = btn.Value
+                if values == 'license' or values == 'discord' or values == 'steam' then return end
                 local dialog = exports['qb-input']:ShowInput({
                     header = Lang:t("desc.update_info"),
                     submitText = "Confirm",

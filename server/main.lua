@@ -517,6 +517,9 @@ QBCore.Functions.CreateCallback('qb-adminmenu:callback:getplayers', function(sou
             bank = ped.PlayerData.money['bank'],
             job = ped.PlayerData.job.label .. ' | ' .. ped.PlayerData.job.grade.level,
             gang = ped.PlayerData.gang.label,
+            license = QBCore.Functions.GetIdentifier(v, 'license') or 'Unknown',
+            discord = QBCore.Functions.GetIdentifier(v, 'discord') or 'Not Linked',
+            steam = QBCore.Functions.GetIdentifier(v, 'steam') or 'Not Linked',
         }
     end
         -- Sort players list by source ID (1,2,3,4,5, etc) --
