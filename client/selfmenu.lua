@@ -218,3 +218,21 @@ SelfMenu:AddButton({
         GetPlayerName(PlayerId()), Admin.citizenid, Admin.source))
     end
 })
+
+SelfMenu:AddButton({
+    icon = '🗺️',
+    label = Lang:t("menu.teleport_locations"),
+    value = SelfMenuTeleport,
+    description = Lang:t("desc.teleport_locations_desc")
+})
+
+for k in pairs(Locations) do
+    SelfMenuTeleport:AddButton({
+        label = k,
+        select = function()
+            TriggerServerEvent('qb-admin:server:teleportlocation', k)
+            TriggerServerEvent('qb-log:server:CreateLog', 'admin', 'Admin menu', 'pink', string.format("**%s** (CitizenID: %s | ID: %s) - Used teleport on %s",
+            GetPlayerName(PlayerId()), Admin.citizenid, Admin.source, k))
+        end
+    })
+end

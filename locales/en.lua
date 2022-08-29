@@ -86,6 +86,7 @@ local Translations = {
     menu = {
         ["admin_menu"] = "Admin Menu",
         ["admin_options"] = "Admin Options",
+        ["teleport_locations"] = "Popular Locations",
         ["online_players"] = "Online Players",
         ["manage_server"] = "Manage Server",
         ["weather_conditions"] = "Available Weather Options",
@@ -159,6 +160,7 @@ local Translations = {
     },
     desc = {
         ["admin_options_desc"] = "Misc. Admin Options",
+        ["teleport_locations_desc"] = "Teleport to popular locations around the map",
         ["player_management_desc"] = "View List Of Players",
         ["server_management_desc"] = "Misc. Server Options",
         ["vehicles_desc"] = "Vehicle Options",

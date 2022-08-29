@@ -482,6 +482,14 @@ RegisterNetEvent('qb-admin:server:giveallweapons', function(Weapontype, PlayerID
     end
 end)
 
+RegisterNetEvent('qb-admin:server:teleportlocation', function(LocationIndex)
+    local src = source
+
+    if not (UseQBCorePermissions and QBCore.Functions.HasPermission(src, events['teleportlocation']) or HasPermission(src, events['teleportlocation'])) then NoPerms(src) return end
+
+    SetEntityCoords(GetPlayerPed(src), Locations[LocationIndex])
+end)
+
 QBCore.Functions.CreateCallback('qb-adminmenu:callback:getdealers', function(source, cb)
     if not (UseQBCorePermissions and QBCore.Functions.HasPermission(source, events['usemenu']) or HasPermission(source, events['usemenu'])) then NoPerms(source) return end
 

@@ -31,6 +31,7 @@ events = {
     ['giveallweapons'] = 'god',
     ['reports'] = 'mod',
     ['staffchat'] = 'mod',
+    ['teleportlocation'] = 'mod',
 }
 
 --- Who should be able to trigger each command on the server side?

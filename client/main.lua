@@ -1,7 +1,4 @@
 QBCore = exports['qb-core']:GetCoreObject()
-menuLocation = 'topright' -- e.g. topright (default), topleft, bottomright, bottomleft
-menuSize = 'size-125' -- e.g. 'size-100', 'size-110', 'size-125', 'size-150', 'size-175', 'size-200'
-r, g, b = 20, 255, 236 -- red, green, blue values for the menu background
 SelectedPlayer = nil
 Admin = QBCore.Functions.GetPlayerData()
 local blockedPeds = {
@@ -22,6 +19,7 @@ local isSpectating = false
 
 MainMenu = MenuV:CreateMenu(false, Lang:t("menu.admin_menu"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:mainmenu')
 SelfMenu = MenuV:CreateMenu(false, Lang:t("menu.admin_options"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:selfmenu')
+SelfMenuTeleport = MenuV:CreateMenu(false, Lang:t("menu.teleport_locations"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:selfmenuteleport')
 PlayerMenu = MenuV:CreateMenu(false, Lang:t("menu.online_players"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:playermenu')
 PlayerDetailMenu = MenuV:CreateMenu(false, Lang:t("info.options"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:playerdetailmenu')
 PlayerGeneralMenu = MenuV:CreateMenu(false, Lang:t("menu.player_general"), menuLocation, r, g, b, menuSize, 'qbcore', 'menuv', 'qb-admin:playergeneral')
