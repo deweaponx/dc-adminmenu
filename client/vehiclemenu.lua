@@ -1,4 +1,6 @@
 local vehicles = {}
+-- Original function without sort
+
 local function OpenCarModelsMenu(category)
     VehNameMenu:ClearItems()
     MenuV:OpenMenu(VehNameMenu)
@@ -13,6 +15,35 @@ local function OpenCarModelsMenu(category)
         })
     end
 end
+
+-- Adding sort
+-- local function OpenCarModelsMenu(category)
+
+--     VehNameMenu:ClearItems()
+--     MenuV:OpenMenu(VehNameMenu)
+
+--     local categories = {}
+
+--     for k, v in pairs(category) do
+--         table.insert(categories, {k,v})
+--     end
+
+--     table.sort(categories, function(a, b)
+--         return a.name < b.name
+--     end)
+
+--     for i, n in ipairs(categories) do
+--         VehNameMenu:AddButton({
+--             label = n["name"],
+--             value = i,
+--             description = 'Spawn ' .. n["name"],
+--             select = function()
+--                 TriggerServerEvent('qb-admin:server:spawnVehicle', i)
+--             end
+--         })
+--     end
+-- end
+
 VehicleMenu:AddButton({
     icon = '🚗',
     label = Lang:t("menu.spawn_vehicle"),
@@ -96,6 +127,16 @@ VehicleMenu:AddButton({
         }
         TriggerEvent('qb-customs:client:EnterCustoms', override)
         MenuV:CloseAll()
+    end
+})
+
+VehicleMenu:AddButton({
+    icon = '⚡️',
+    label = Lang:t("menu.max_mods"),
+    description = Lang:t("desc.max_mods_desc"),
+    select = function()
+        TriggerServerEvent('QBCore:CallCommand', "maxmods", {})
+        --TriggerServerEvent('qb-admin:server:maxmodVehicle', src)
     end
 })
 

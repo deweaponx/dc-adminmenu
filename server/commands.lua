@@ -159,6 +159,12 @@ end)
 --     end
 -- end)
 
+-- Adding maxmods from qb-adminmenu
+QBCore.Commands.Add('maxmods', Lang:t("desc.max_mods_desc"), {}, false, function(source, args)
+    local src = source
+    TriggerClientEvent('qb-admin:client:maxmodVehicle', src)
+end)
+
 QBCore.Commands.Add('reportr', Lang:t("commands.reply_to_report"), {{name='id', help='Player'}, {name = 'message', help = 'Message to respond with'}}, false, function(source, args)
     local src = source
 
